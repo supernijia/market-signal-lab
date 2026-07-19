@@ -1,0 +1,40 @@
+# Local generated files
+
+# Virtualenv
+venv/
+.venv/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Logs and runtime output
+*.log
+logs/*
+!logs/.gitkeep
+*.lock
+
+# Generated diagnostics
+reports/mysql_preflight/
+reports/paper_training_cash/
+reports/shadow_training_preflight/
+
+# OS/editor noise
+.DS_Store
+
+# Local scratch
+tmp/
+
+# Runtime data and local exports
+data/*.json
+data/*.csv
+reports/images/
+reports/*/
+
+# Local DB snapshots / exports (if any)
+*.sqlite
+*.db
+
+# Environment files (only the .example template is public)
+.env.*
+!.env.openclaw.example

@@ -1,0 +1,14 @@
+CREATE TABLE `positions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `code` varchar(10) DEFAULT NULL,
+  `account` varchar(20) DEFAULT 'main',
+  `name` varchar(50) DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `avg_price` decimal(10,2) DEFAULT NULL,
+  `market_value` decimal(12,2) DEFAULT NULL,
+  `pnl` decimal(12,2) DEFAULT NULL,
+  `pnl_pct` decimal(8,2) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

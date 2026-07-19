@@ -1,0 +1,765 @@
+{
+  "auction": {
+    "min_open_change": 2.0,
+    "max_open_change": 10.0,
+    "min_turnover": 0.5,
+    "max_candidates": 5,
+    "prefer_first_board": true,
+    "first_board_bonus": 12,
+    "first_board_min_open_change": 1.5,
+    "first_board_max_open_change": 4.8,
+    "first_board_min_turnover": 0.8,
+    "first_board_max_turnover": 8.0,
+    "zt_continue_boost": {
+      "min_open_change": 5.0,
+      "max_vol_ratio": 0.8,
+      "score_bonus": 30,
+      "description": "昨日涨停+高开>=5%+缩量<0.8倍=涨停续涨标签，训练准确率63%"
+    },
+    "mf_days": 3,
+    "max_5d_gain": 20,
+    "max_10d_gain": 30,
+    "max_ma20_deviation": 25,
+    "max_consecutive_limit_up": 5,
+    "limit_up_boost": {
+      "weight": 1.2,
+      "min_fd_amount_yi": 0.1
+    },
+    "cold_start": {
+      "enabled": true,
+      "description": "冷启动策略：抓取昨日未涨/横盘，但今日早盘突然异动的个股",
+      "min_open_change": 2.0,
+      "max_open_change": 9.0,
+      "min_turnover": 0.5,
+      "max_turnover": 5.0,
+      "prev_max_change": 5.0,
+      "prev_allow_zt": false,
+      "max_5d_gain": 10.0,
+      "max_10d_gain": 15.0,
+      "max_candidates": 5,
+      "weight_open_change": 4,
+      "weight_turnover": 5,
+      "weight_mf_intensity": 30,
+      "weight_first_board": 15,
+      "mf_days": 3,
+      "max_ma20_deviation": 20,
+      "overheated_filter": true,
+      "shape_check": {
+        "enabled": true,
+        "description": "形态过滤：站上均线MA5+不跌破MA10",
+        "require_above_ma5": true,
+        "require_not_below_ma10": true,
+        "require_volume_up": true,
+        "min_volume_ratio": 1.0
+      }
+    }
+  },
+  "cold_start_observe_model": {
+    "enabled": true,
+    "description": "冷启动观察模型：仅用于日志/邮件/标签展示，不改变主排序，不触发自动交易。",
+    "model_dir": "data/models",
+    "core_top_observe_only": true,
+    "enable_early_absorb_tag": true,
+    "enable_delayed_confirm_tag": true,
+    "enable_pullback_entry_watch": true,
+    "pullback_entry_observe_only": true
+  },
+  "afternoon": {
+    "min_change": 1.5,
+    "max_change": 7.0,
+    "min_turnover": 2.0,
+    "max_turnover": 15.0,
+    "max_candidates": 3,
+    "first_board_bonus": 6,
+    "weight_change": 150,
+    "weight_turnover": 12,
+    "weight_nbo_intensity": 20,
+    "weight_elg_ratio": 56,
+    "weight_stability": 10,
+    "weight_hsgt": 15,
+    "max_5d_gain": 20,
+    "max_10d_gain": 30,
+    "max_ma20_deviation": 25,
+    "max_consecutive_limit_up": 2
+  },
+  "watchlist": {
+    "days": 5,
+    "observe_days": 5,
+    "expire_grace_days": 3,
+    "observe_expiry_rule": "超过 observe_days 个自然日仍未触发动态入场，则标记 EXPIRED；技术破位/首板转弱单独标记 REMOVED。",
+    "min_inflow_days": 1,
+    "max_candidates": 3,
+    "weight_change": 4,
+    "weight_vol_ratio": 5,
+    "weight_mf_intensity": 30,
+    "penalty_dist_ma5": 20,
+    "first_board_min_vol_ratio": 1.5,
+    "first_board_min_intraday_change": 0.5,
+    "first_board_max_pullback_from_sel": -2.0,
+    "first_board_buy_score_bonus": 5,
+    "first_board_remove_below_sel_pct": -3.0
+  },
+  "post_market": {
+    "min_close_change": 1.0,
+    "min_turnover": 2.0,
+    "min_amount_yi": 0.5,
+    "max_candidates": 5,
+    "max_5d_gain": 20,
+    "max_10d_gain": 30,
+    "max_ma20_deviation": 25,
+    "max_consecutive_limit_up": 2
+  },
+  "macd": {
+    "fast": 12,
+    "slow": 26,
+    "signal": 9
+  },
+  "weather_risk": {
+    "☀️晴天": {
+      "stop_loss": -0.06,
+      "take_profit": 0.25,
+      "trailing_retrace": 0.15,
+      "description": "容忍波动，追求趋势"
+    },
+    "☁️多云": {
+      "stop_loss": -0.04,
+      "take_profit": 0.12,
+      "trailing_retrace": 0.08,
+      "description": "标准防御"
+    },
+    "⚠️暴雨": {
+      "stop_loss": -0.03,
+      "take_profit": 0.08,
+      "trailing_retrace": 0.05,
+      "description": "极端敏捷，防范阴跌"
+    }
+  },
+  "market_permission": {
+    "MAIN": {
+      "allowed_boards": [
+        "main"
+      ],
+      "promotion_threshold": 500000,
+      "description": "主板权限 - 初始仅交易主板"
+    },
+    "GEM": {
+      "allowed_boards": [
+        "main",
+        "gem"
+      ],
+      "promotion_threshold": 1000000,
+      "description": "创业板权限 - 资产超过50万可晋级"
+    },
+    "STAR": {
+      "allowed_boards": [
+        "main",
+        "gem",
+        "star"
+      ],
+      "promotion_threshold": 2000000,
+      "description": "科创板权限 - 资产超过100万可晋级"
+    }
+  },
+  "institutional_intelligence": {
+    "margin_boost": {
+      "min_intensity": 5.0,
+      "score_bonus": 10,
+      "description": "融资买入强度>5%时加10分"
+    },
+    "holder_concentration": {
+      "max_decline_rate": -5.0,
+      "score_bonus": 10,
+      "description": "股东人数连续下降时加10分"
+    },
+    "shareholder_trap": {
+      "max_increase_rate": 10.0,
+      "action": "HARD_REJECT",
+      "description": "股东人数暴增>10%直接否决"
+    },
+    "state_fund": {
+      "sl_widening": -0.07,
+      "description": "国家队标的止损放宽至-7%"
+    }
+  },
+  "atr_volatility": {
+    "window": 14,
+    "multipliers": {
+      "low": 1.5,
+      "medium": 2.0,
+      "high": 2.5
+    },
+    "description": "ATR倍数: 低波动1.5x, 中波动2.0x, 高波动2.5x"
+  },
+  "risk_management": {
+    "risk_percent_per_trade": 0.02,
+    "max_position_percent": 0.3,
+    "STOP_LOSS": -0.03,
+    "MIN_PROFIT_LOCK": 0.03,
+    "description": "单笔风险2%，单票上限30%，止损3%，盈利3%后锁住保本线"
+  },
+  "position_sizer": {
+    "enabled": true,
+    "min_order_amount": 5000,
+    "min_order_position_pct_floor": 0.08,
+    "absolute_max_position_pct": 0.4,
+    "base_position_pct": 0.2,
+    "low_size_multiplier": 0.3,
+    "market_regime_multiplier": {
+      "strong_uptrend": 1.2,
+      "normal_uptrend": 1.0,
+      "range_market": 0.6,
+      "weak_market": 0.35,
+      "storm_market": 0.0
+    },
+    "volatility_multiplier": {
+      "low": 1.25,
+      "medium": 1.0,
+      "high": 0.5,
+      "unknown": 0.8
+    },
+    "max_positions_multiplier": {
+      "near_limit": 0.5,
+      "at_or_over_limit": 0.0
+    },
+    "daily_loss": {
+      "enabled": true,
+      "warn_pct": -0.02,
+      "hard_stop_pct": -0.04,
+      "warn_multiplier": 0.5
+    },
+    "consecutive_loss": {
+      "enabled": true,
+      "lookback": 5,
+      "warn_count": 2,
+      "hard_stop_count": 3,
+      "warn_multiplier": 0.5
+    },
+    "account_overrides": {
+      "paper_*": {
+        "min_order_amount": 5000,
+        "min_order_position_pct_floor": 0.001,
+        "absolute_max_position_pct": 0.2,
+        "base_position_pct": 0.1,
+        "ensure_round_lot_when_cash_available": true,
+        "market_regime_multiplier": {
+          "weak_market": 0.5,
+          "storm_market": 0.6
+        },
+        "max_positions_multiplier": {
+          "near_limit": 1.0,
+          "at_or_over_limit": 0.0
+        },
+        "daily_loss": {
+          "enabled": true,
+          "warn_pct": -0.02,
+          "hard_stop_pct": -1.0,
+          "warn_multiplier": 0.7
+        },
+        "consecutive_loss": {
+          "enabled": true,
+          "lookback": 5,
+          "warn_count": 2,
+          "hard_stop_count": 999,
+          "warn_multiplier": 0.7
+        }
+      }
+    },
+    "description": "统一仓位预算器：结合权限动作、市场regime、ATR波动、持仓数量、当日亏损和连续亏损决定自动买入仓位。"
+  },
+  "sector_rotation": {
+    "enabled": true,
+    "strong_rank": 5,
+    "weak_avg_change": -1.0,
+    "strong_min_avg_change": 0.2,
+    "strong_require_positive_flow": false,
+    "weak_market_require_strong_sector": true,
+    "weak_market_unknown_sector_action": "PENALTY",
+    "leader_top_n": 3,
+    "leader_score_bonus": 8,
+    "weak_sector_penalty": -12,
+    "unknown_sector_penalty": -4,
+    "description": "行业轮动确认：按行业涨幅/资金流强度分层，弱市优先强行业；行业 UNKNOWN 不再硬拒绝，改为降权后进入确认链路，并给行业内前排龙头打标签。"
+  },
+  "paper_account": {
+    "enabled": true,
+    "shadow_buy_enabled": true,
+    "main_account": "paper_main",
+    "watchlist_account": "paper_watchlist",
+    "mirror_quantity": true,
+    "training_cash_target": 100000,
+    "training_cash_floor": 100000,
+    "description": "影子仿真账户：真实/观察链路买入成功后，同步记录到 paper_main/paper_watchlist，用于1-2周规则观察。"
+  },
+  "paper_exit_policy": {
+    "enabled": true,
+    "name": "paper_short_cycle_exit_v1",
+    "stop_loss": -0.025,
+    "max_hold_days": 2,
+    "min_hold_return": 0.015,
+    "min_profit_lock_trigger": 0.02,
+    "min_profit_lock_pct": 0.01,
+    "laddered_take_profit": [
+      [
+        0.025,
+        1.0
+      ]
+    ],
+    "trailing_retrace": {
+      "☀️晴天": 0.025,
+      "☁️多云": 0.04,
+      "⚠️暴雨": 0.035
+    },
+    "description": "只对 paper_* 生效的短线退出训练策略：盈利2.5%直接全平，亏损2.5%止损，持仓满2天且收益不足1.5%出清，用于快速形成影子买卖成绩样本。"
+  },
+  "trend_filter": {
+    "enabled": true,
+    "adx_threshold": 25,
+    "min_adx": 20,
+    "description": "V20趋势强度过滤：ADX在25-40区间且+DI占优才允许买入"
+  },
+  "intraday_structure": {
+    "enabled": false,
+    "max_price_vwap_ratio": 1.03,
+    "description": "分时结构门禁(默认关闭)：price/vwap 超过阈值则拒绝买入，防追高。"
+  },
+  "entry_confirm": {
+    "enabled": true,
+    "data_quality_bad_action": "BLOCK",
+    "data_quality_degraded_action": "CONFIRM_ONLY",
+    "min_price": 0.01,
+    "min_volume_ratio": 1.8,
+    "max_price_vwap_ratio": 1.025,
+    "min_price_vwap_ratio": 0.995,
+    "max_distance_from_intraday_high_pct": 1.2,
+    "max_upper_retrace_pct": 1.8,
+    "opening_range": {
+      "enabled": true,
+      "end_time": "10:00",
+      "min_breakout_pct": 0.15
+    },
+    "recent_overheat_gate": {
+      "enabled": true,
+      "apply_to_pending": true,
+      "apply_to_immediate": false,
+      "history_count": 30,
+      "min_history_count": 10,
+      "fail_open": true,
+      "default": {
+        "max_5d_gain": 20,
+        "max_10d_gain": 30,
+        "max_ma20_deviation": 25,
+        "max_consecutive_limit_up": 3
+      },
+      "strategies": {
+        "集合竞价": {
+          "max_5d_gain": 10,
+          "max_10d_gain": 15,
+          "max_ma20_deviation": 20,
+          "max_consecutive_limit_up": 3
+        },
+        "早盘竞价首选": {
+          "max_5d_gain": 10,
+          "max_10d_gain": 15,
+          "max_ma20_deviation": 20,
+          "max_consecutive_limit_up": 3
+        },
+        "冷启动": {
+          "max_5d_gain": 10,
+          "max_10d_gain": 15,
+          "max_ma20_deviation": 20,
+          "max_consecutive_limit_up": 3
+        },
+        "午盘精选": {
+          "max_5d_gain": 20,
+          "max_10d_gain": 30,
+          "max_ma20_deviation": 25,
+          "max_consecutive_limit_up": 2
+        }
+      },
+      "description": "执行前近期过热复核：pending买入前重新检查近5/10日涨幅、MA20偏离和近5日涨停次数，防止候选阶段过滤被动态入场链路绕过。"
+    },
+    "description": "pending入场确认：L0数据质量、VWAP、开盘区间、冲高回落、二次放量和执行前近期过热复核。"
+  },
+  "paper_strong_entry_experiment": {
+    "enabled": true,
+    "max_pending_candidates": 5,
+    "min_current_change_pct": 5.0,
+    "board_change_ceiling_pct": {
+      "main": 10.2,
+      "growth": 20.2,
+      "st": 5.2
+    },
+    "max_buy_change": 20.2,
+    "min_volume_ratio": 0.9,
+    "max_price_vwap_ratio": 1.05,
+    "min_price_vwap_ratio": 0.99,
+    "max_distance_from_intraday_high_pct": 3.0,
+    "max_upper_retrace_pct": 4.0,
+    "max_one_price_range_pct": 0.12,
+    "unfillable_near_limit_buffer_pct": 0.12,
+    "disable_limit_up_gate": true,
+    "recent_overheat_gate": {
+      "max_5d_gain": 35,
+      "max_10d_gain": 55,
+      "max_ma20_deviation": 45,
+      "max_consecutive_limit_up": 4
+    },
+    "description": "只对 paper_main/paper_watchlist 生效的强票影子实验：真实账户保持原门禁；影子备选池可把被涨幅/触板前置过滤挡住的强票入PENDING，并用更适合强势接力的二次确认阈值采样。"
+  },
+  "paper_weak_market_gate_experiment": {
+    "enabled": true,
+    "allowed_accounts": [
+      "paper_main",
+      "paper_watchlist"
+    ],
+    "require_paper_experiment_tag": false,
+    "sample_floor_override": 25,
+    "weak_chase_override_pct": 5.0,
+    "max_per_day": 2,
+    "description": "只对 paper_main/paper_watchlist 生效：弱市样本门槛实验从30下探到25，弱市当前涨幅观察带扩到5.0%，用于影子买卖训练；不得作用于 main/watchlist 或实盘。"
+  },
+  "entry_policy": {
+    "enabled": true,
+    "default_model": "dynamic_window",
+    "description": "动态时间窗入场策略(默认关闭)：将信号写入pending_entry_signals，在bucket窗口内多次复核择机入场，减少一次性买高。",
+    "models": {
+      "immediate": {
+        "description": "保持现状：每次运行当场验证通过就买入，不做跨时刻重试。"
+      },
+      "dynamic_window": {
+        "description": "动态时间窗：把候选转为pending信号，在允许窗口内多次尝试入场。",
+        "retry_cooldown_sec": 300,
+        "max_retries": 6,
+        "expire_at_bucket_end": true,
+        "max_price_vwap_ratio": null,
+        "strategy_windows": {
+          "集合竞价": [
+            "B1"
+          ],
+          "午盘精选": [
+            "B4",
+            "B5"
+          ],
+          "备选池买入触发": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ],
+          "冷启动": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ],
+          "龙头跟踪": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ],
+          "技术突破": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ],
+          "盘后资金流": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ]
+        }
+      }
+    }
+  },
+  "paper_all_pool_execution": {
+    "enabled": true,
+    "default_max_candidates": 5,
+    "focus_monitor_enabled": true,
+    "focus_monitor_max_rows": 8,
+    "scan_interval_sec": 120,
+    "retry_cooldown_sec": 120,
+    "max_retries": 10,
+    "max_candidates_per_strategy": {
+      "集合竞价": 5,
+      "冷启动": 5,
+      "龙头跟踪": 5,
+      "技术突破": 5,
+      "午盘精选": 3,
+      "盘后资金流": 5
+    },
+    "windows": {
+      "*": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "午盘精选": [
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ]
+    },
+    "description": "影子执行阶段：所有选股池先进入 paper 可买 pending，通过真实买卖样本评估策略成绩；真实账户不受影响。"
+  },
+  "shadow_pending": {
+    "enabled": true,
+    "mode": "audit_only",
+    "write_on_focus_monitor": true,
+    "status": "SHADOW",
+    "entry_model": "audit_only_shadow",
+    "max_rows_per_run": 20,
+    "strategies": [
+      "集合竞价",
+      "龙头跟踪",
+      "冷启动",
+      "技术突破"
+    ],
+    "windows": {
+      "集合竞价": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "龙头跟踪": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "冷启动": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "技术突破": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ]
+    },
+    "description": "P0影子pending审计：只写入pending_entry_signals(status=SHADOW, source_strategy=*_SHADOW)，不进入真实买入队列。"
+  },
+  "cold_start_entry": {
+    "enabled": true,
+    "description": "冷启动买入策略：分层买入，风控优先",
+    "aggressive": {
+      "enabled": true,
+      "description": "开盘急拉型：高开>5%，立即买入",
+      "min_open_change": 5.0,
+      "max_price_vwap_ratio": 1.03,
+      "max_change_tolerance": 0.02,
+      "position_ratio": 0.15
+    },
+    "conservative": {
+      "enabled": true,
+      "description": "震荡上行型：高开2-5%，午后确认买入",
+      "min_open_change": 2.0,
+      "max_open_change": 5.0,
+      "require_bucket_B3": true,
+      "max_price_vwap_ratio": 1.02,
+      "max_change_tolerance": 0.01,
+      "position_ratio": 0.1
+    },
+    "common": {
+      "description": "通用风控：所有冷启动买入都需满足",
+      "min_mf_intensity_yi": 1.0,
+      "max_5d_gain": 15.0,
+      "max_turnover": 8.0,
+      "min_prev_change": -5.0,
+      "max_prev_change": 3.0
+    }
+  },
+  "attack_window_gate": {
+    "enabled": false,
+    "min_samples": 30,
+    "description": "进攻窗口门禁(默认关闭)：按 weather×time_bucket 限制自动买入，仅用于本金安全。",
+    "rules": {
+      "☀️晴天": [
+        "B1",
+        "B4"
+      ],
+      "☁️多云": [
+        "B4"
+      ],
+      "⚠️暴雨": []
+    }
+  },
+  "limit_up_gate": {
+    "enabled": true,
+    "near_limit_buffer_pct": 0.5,
+    "touch_limit_buffer_pct": 0.2,
+    "fallback_limit_pct": 10,
+    "board_limit_pct": {
+      "main": 10,
+      "gem": 20,
+      "star": 20,
+      "bj": 30,
+      "st": 5
+    },
+    "description": "涨停/临近涨停/盘中摸板禁买（更贴近真实成交：封板排队通常买不到）。"
+  },
+  "win_rate_gate": {
+    "enabled": true,
+    "analysis_cycle": "T+1",
+    "lookback_days": 20,
+    "min_samples": 30,
+    "min_win_rate": 0.55,
+    "win_statuses": [
+      "涨停",
+      "吃肉"
+    ],
+    "insufficient_samples_action": "ALLOW_WITH_WARN",
+    "description": "历史胜率门禁(默认关闭)：按 strategy 的 T+1 胜率过滤低胜率策略买入。"
+  },
+  "t1_blocked_alert": {
+    "enabled": true,
+    "thresholds_pct": [
+      -5.0,
+      -8.0
+    ],
+    "description": "当日买入持仓触发止损/保护线但受T+1限制无法卖出时，达到阈值发送风险邮件；只通知，不绕过T+1，不自动卖。"
+  },
+  "data_quality_gate": {
+    "enabled": true,
+    "bad_action": "BLOCK",
+    "degraded_action": "CONFIRM_ONLY",
+    "bad_missing_fields": [
+      "price",
+      "pre_close"
+    ],
+    "degraded_missing_fields": [
+      "vol",
+      "amount"
+    ],
+    "treat_realtime_fallback_as_degraded": true,
+    "description": "L0数据质量门禁：价格/昨收缺失禁止自动买；量额缺失或实时fallback只允许pending/确认，不直接自动买。"
+  },
+  "weak_market_entry_gate": {
+    "enabled": true,
+    "early_cutoff": "10:00",
+    "early_block_strategies": [
+      "集合竞价",
+      "早盘竞价首选",
+      "pre_market"
+    ],
+    "weak_weather_blocklist": [
+      "☁️多云",
+      "⚠️暴雨"
+    ],
+    "weak_risk_levels": [
+      "medium",
+      "high"
+    ],
+    "weak_message_keywords": [
+      "市场转弱",
+      "跌破MA20",
+      "MA20下方",
+      "暴雨",
+      "极端警报"
+    ],
+    "min_win_rate_samples": 30,
+    "block_insufficient_samples": true,
+    "relay_keywords": [
+      "昨日涨停",
+      "接力",
+      "高开",
+      "涨停续涨",
+      "CONTINUE_BOARD_CANDIDATE"
+    ],
+    "weak_max_open_change": 2.5,
+    "weak_max_change": 4.5,
+    "weak_max_change_floor": 4.5,
+    "allow_storm_pending_probe": true,
+    "storm_pending_probe_max_per_run": 1,
+    "description": "P0统一开仓前门禁：弱市/市场转弱下，集合竞价早盘、样本不足、接力高开、追高候选只入库/确认；弱市高开仍按2.5%防守，当前涨幅放宽到4.5%以减少强票误杀；暴雨只允许主账户每轮最多1只强确认PENDING，不直接买入。",
+    "risk_event_enabled": true,
+    "force_pending_before_cutoff": true,
+    "strong_regimes": [
+      "strong_uptrend"
+    ]
+  },
+  "first_limit_breakout_combo": {
+    "enabled": true,
+    "mode": "observe",
+    "max_minute_fetches_per_run": 10,
+    "first_limit_score_min": 0.45,
+    "breakout_score_min": 0.17,
+    "combo_score_product_min": 0.12,
+    "breakout_false_break_veto_enabled": true,
+    "breakout_net60_score_min": 0.10984367250077816,
+    "breakout_false60_score_max": 0.3702060657071523,
+    "breakout_entry_timing_enabled": true,
+    "breakout_high_quality_entry_delay_min": 10,
+    "breakout_normal_entry_delay_min": 10,
+    "apply_to_board_contexts": [
+      "first_board"
+    ],
+    "observe_only_strategies": [
+      "watchlist",
+      "breakout_watchlist"
+    ],
+    "breakout_model_variant": "entry_quality_tplus1_execution_v1",
+    "breakout_execution_gate_enabled": true,
+    "breakout_max_entry_chase_pct": 0.08,
+    "breakout_min_entry_minute_amount": 1000000.0,
+    "breakout_limit_queue_risk_veto_enabled": true,
+    "training_note": "observe only: conservative executable breakout T+1 audit win=93.55%, avg_rule=4.79%, n=62."
+  },
+  "limit_pool": {
+    "max_candidates": 3,
+    "description": "龙头跟踪策略：只选最强3只"
+  },
+  "strategy_permission_matrix": {
+    "strong_uptrend": {
+      "*": "AUTO"
+    },
+    "normal_uptrend": {
+      "集合竞价": "CONFIRM_ONLY",
+      "冷启动": "CONFIRM_ONLY",
+      "龙头跟踪": "AUTO",
+      "技术突破": "AUTO",
+      "午盘精选": "AUTO",
+      "备选池买入触发": "AUTO",
+      "盘后资金流": "CONFIRM_ONLY"
+    },
+    "range_market": {
+      "集合竞价": "CONFIRM_ONLY",
+      "冷启动": "CONFIRM_ONLY",
+      "龙头跟踪": "CONFIRM_ONLY",
+      "技术突破": "CONFIRM_ONLY",
+      "午盘精选": "LOW_SIZE_CONFIRM",
+      "备选池买入触发": "CONFIRM_ONLY",
+      "盘后资金流": "OBSERVE"
+    },
+    "weak_market": {
+      "集合竞价": "BLOCK",
+      "早盘竞价首选": "BLOCK",
+      "冷启动": "LOW_SIZE_CONFIRM",
+      "龙头跟踪": "OBSERVE",
+      "技术突破": "CONFIRM_ONLY",
+      "午盘精选": "LOW_SIZE_CONFIRM",
+      "备选池买入触发": "CONFIRM_ONLY",
+      "盘后资金流": "OBSERVE"
+    },
+    "storm_market": {
+      "集合竞价": "BLOCK",
+      "早盘竞价首选": "BLOCK",
+      "冷启动": "LOW_SIZE_CONFIRM",
+      "龙头跟踪": "LOW_SIZE_CONFIRM",
+      "技术突破": "LOW_SIZE_CONFIRM",
+      "午盘精选": "LOW_SIZE_CONFIRM",
+      "备选池买入触发": "LOW_SIZE_CONFIRM",
+      "盘后资金流": "CONFIRM_ONLY",
+      "*": "BLOCK"
+    },
+    "description": "市场regime × 策略 的交易权限矩阵；Phase 2 使用，当前先作为结构化配置和审计依据。"
+  }
+}

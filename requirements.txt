@@ -1,0 +1,9 @@
+requests
+pandas
+pymysql
+openpyxl
+tushare
+matplotlib
+mplfinance
+lxml
+redis
